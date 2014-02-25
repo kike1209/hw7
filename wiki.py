@@ -54,9 +54,11 @@ class WikiPage(ndb.Model):
             date_format = "%Y-%m-%d %H:%M:%S.%f" # 2014-02-25 11:31:06.090960
             dt = datetime.strptime(datetime, date_format)
             q = q.filter(cls.last_modified == dt)
-        return q.order(-cls.last_modified)
+            return q
+        else:
+            return q.order(-cls.last_modified)
 
-      
+
 # user management ----------------------------------------------------
 
 def valid_username(username):
@@ -221,6 +223,7 @@ def display_page(wr, template, edit_mode, page_url, new_url, page_datetime=None)
 class EditPage(webapp2.RequestHandler):
     def get(self, page_url):
         page_datetime = self.request.get('p') # get p parameter from querystring, only set if coming from 'history' page
+        self.response.write(page_datetime)
         if DEBUG:
             d = '('+page_datetime+')'
             logging.info(d)
