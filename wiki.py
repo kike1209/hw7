@@ -49,7 +49,9 @@ class WikiPage(ndb.Model):
         q = q.filter(cls.username == username)
         q = q.filter(cls.page_url == page_url)
         if datetime is not None and datetime != '':
-            date_format = "%Y-%m-%d %H:%M:%S.%Z" # 2014-02-25 11:31:06.090960
+            if DEBUG:
+                logging.error(datetime)
+            date_format = "%Y-%m-%d %H:%M:%S.%f" # 2014-02-25 11:31:06.090960
             dt = datetime.strptime(datetime, date_format)
             q = q.filter(cls.last_modified == dt)
         return q.order(-cls.last_modified)
@@ -232,7 +234,7 @@ class EditPage(webapp2.RequestHandler):
         content = self.request.get('content')
         wp = WikiPage(username = valid_username, page_url = page_url, content = content)
         wp.put()
-        time.sleep(1) # to avoid "eventual consistency" issues with datastore...
+        #time.sleep(1) # to avoid "eventual consistency" issues with datastore...
         self.redirect(page_url)
 
 
