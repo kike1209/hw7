@@ -223,7 +223,7 @@ class EditPage(webapp2.RequestHandler):
         content = self.request.get('content')
         wp = WikiPage(username = valid_username, page_url = page_url, content = content)
         wp.put()
-        #time.sleep(1) # to avoid "eventual consistency" issues with datastore...
+        time.sleep(1) # to avoid "eventual consistency" issues with datastore...
         self.redirect(page_url)
 
 
