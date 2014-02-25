@@ -43,13 +43,15 @@ class WikiPage(ndb.Model):
     last_modified = ndb.DateTimeProperty(auto_now = True)
     
     @classmethod
-    def query_wiki(cls, username, page_url):
+    def query_wiki(cls, username, page_url, datetime=None):
         q = cls.query()
         q = q.filter(cls.username == username)
-        q = q.filter(cls.page_url == page_url).order(-cls.last_modified)
-        return q
-        
-            
+        q = q.filter(cls.page_url == page_url)
+        if datetime is not None:
+            q = q.filter(cls.last_modified == datetime)
+        return q.order(-cls.last_modified)
+
+      
 # user management ----------------------------------------------------
 
 def valid_username(username):
@@ -188,7 +190,7 @@ def is_a_valid_username(wr):
     return valid_username
 
 
-def display_page(wr, template, edit_mode, page_url, new_url):
+def display_page(wr, template, edit_mode, page_url, new_url, page_datetime=None):
     # get username from cookie
     valid_username = is_a_valid_username(wr)
     if not valid_username:
@@ -197,7 +199,10 @@ def display_page(wr, template, edit_mode, page_url, new_url):
         page_url = '/'
         
     pu = pc = ''
-    page_key = WikiPage.query_wiki(valid_username, page_url)
+    if page_datetime: 
+        page_key = WikiPage.query_wiki_datetime(valid_username, page_url, page_datetime)
+    else:
+        page_key = WikiPage.query_wiki(valid_username, page_url)
     page = page_key.get()
     if not page: # page does not exist
         if not edit_mode: # redirect to edit:
@@ -213,7 +218,11 @@ def display_page(wr, template, edit_mode, page_url, new_url):
 
 class EditPage(webapp2.RequestHandler):
     def get(self, page_url):
-        display_page(self, 'edit-page.html', True, page_url, '') # falta meter parametro en la cookie o en querystring?? -----------------------
+        page_datetime = self.request.get('p') # get p parameter from querystring, only set if coming from 'history' page
+        if DEBUG:
+            d = '('+page_datetime+')'
+            logging.info(d)
+        display_page(self, 'edit-page.html', True, page_url, '', page_datetime)
 
     def post(self, page_url):
         valid_username = is_a_valid_username(self)
@@ -229,8 +238,9 @@ class EditPage(webapp2.RequestHandler):
 
 class ViewPage(webapp2.RequestHandler):
     def get(self, page_url):
+        page_datetime = self.request.get('p') # get p parameter from querystring, only set if coming from 'history' page
         new_url = '/_edit{0}'.format(page_url)
-        display_page(self, 'wikipage.html', False, page_url, new_url)
+        display_page(self, 'wikipage.html', False, page_url, new_url, page_datetime)
         
 
 def history_page(wr, template, edit_mode, page_url):
