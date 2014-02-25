@@ -240,7 +240,7 @@ def history_page(wr, template, edit_mode, page_url):
         wr.redirect('/login')          
     
     page_key = WikiPage.query_wiki(valid_username, page_url)
-    page_list = page_key.fetch(10)
+    page_list = page_key.fetch(50)
     if not page_list and not edit_mode: # page does not exist (should not happen)
         wr.redirect('/')
 
