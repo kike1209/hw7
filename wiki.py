@@ -8,6 +8,7 @@ from google.appengine.ext import ndb
 import hmac
 import logging
 import time
+import datetime
 
 """
 Udacity CS-253
@@ -47,8 +48,10 @@ class WikiPage(ndb.Model):
         q = cls.query()
         q = q.filter(cls.username == username)
         q = q.filter(cls.page_url == page_url)
-        if datetime is not None:
-            q = q.filter(cls.last_modified == datetime)
+        if datetime is not None and datetime != '':
+            date_format = "%Y-%m-%d %H:%M:%S.%Z" # 2014-02-25 11:31:06.090960
+            dt = datetime.strptime(datetime, date_format)
+            q = q.filter(cls.last_modified == dt)
         return q.order(-cls.last_modified)
 
       
@@ -199,10 +202,7 @@ def display_page(wr, template, edit_mode, page_url, new_url, page_datetime=None)
         page_url = '/'
         
     pu = pc = ''
-    if page_datetime: 
-        page_key = WikiPage.query_wiki_datetime(valid_username, page_url, page_datetime)
-    else:
-        page_key = WikiPage.query_wiki(valid_username, page_url)
+    page_key = WikiPage.query_wiki(valid_username, page_url, page_datetime)
     page = page_key.get()
     if not page: # page does not exist
         if not edit_mode: # redirect to edit:
