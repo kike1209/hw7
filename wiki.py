@@ -213,7 +213,7 @@ def display_page(wr, template, edit_mode, page_url, new_url):
 
 class EditPage(webapp2.RequestHandler):
     def get(self, page_url):
-        display_page(self, 'edit-page.html', True, page_url, '')
+        display_page(self, 'edit-page.html', True, page_url, '') # falta meter parametro en la cookie o en querystring?? -----------------------
 
     def post(self, page_url):
         valid_username = is_a_valid_username(self)

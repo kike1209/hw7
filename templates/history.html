@@ -12,8 +12,8 @@
       # endif
         <td>{{ p.last_modified }}</td>
         <td>{{ p.content | e }}</td>
-        <td><a class="edit-link" href="{{ page_url }}">view</a></td>
-        <td><a class="edit-link" href="/_edit{{ page_url }}">edit</a></td>
+        <td><a class="edit-link" href="{{ page_url }}?p={{ p.last_modified }}">view</a></td>
+        <td><a class="edit-link" href="/_edit{{ page_url }}?p={{ p.last_modified }}">edit</a></td>
       </tr>
       </p>
     # endfor
