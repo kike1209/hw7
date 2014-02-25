@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="/static/main.css" />
+  <title>CS-253 Wiki</title>
+</head>
+
+<body>
+  <div class="edit-area">
+    {% if username %}
+      {% if edit_mode %}
+        <a class="login-link" href="{{ page_url }}">view</a>
+      {% else %}
+        <a class="edit-link" href="/_edit{{ page_url }}">edit</a>
+      {% endif %}
+      <a class="edit-link" href="/_history{{ page_url }}">history</a>
+    {% endif %}
+
+  </div>
+
+  <div class="login-area">
+    {% if username %}
+      {{ username }} (<a class="login-link" href="/logout">logout</a>)
+    {% else %}
+      <a class="login-link" href="/login">login</a> | <a class="login-link" href="/signup">signup</a>
+    {% endif %}
+  </div>
+
+  <div id="content">
+    {% if username %}
+      {% block content %}
+      {% endblock %}
+    {% endif %}
+  </div>
+
+</body>
+
+</html>
+

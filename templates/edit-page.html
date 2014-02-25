@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+# block content:
+
+  <h2>Edit a new wiki page:</h2>
+
+    <form method="post">
+      <label>
+        <div>Wiki page</div>
+        <textarea autofocus name="content">{{ content }}</textarea>
+      </label>
+
+      <div class="error">{{ error }}</div>
+
+      <input type="submit" value="Save">
+    </form>
+
+# endblock

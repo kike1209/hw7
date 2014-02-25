@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+# block content:
+
+  <div class="history-content">
+    # for p in pages:
+      <p>
+      # if loop.index is divisibleby 2:
+          <tr class="even">
+      # else:
+          <tr class="odd">
+      # endif
+        <td>{{ p.last_modified }}</td>
+        <td>{{ p.content | e }}</td>
+        <td><a class="edit-link" href="{{ page_url }}">view</a></td>
+        <td><a class="edit-link" href="/_edit{{ page_url }}">edit</a></td>
+      </tr>
+      </p>
+    # endfor
+  </div>
+
+# endblock
