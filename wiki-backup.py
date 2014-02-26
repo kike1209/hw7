@@ -13,6 +13,7 @@ from datetime import datetime
 """
 Udacity CS-253
 Problem 7 - final - build a wiki
+(version with querystring)
 """
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -49,6 +50,8 @@ class WikiPage(ndb.Model):
         q = q.filter(cls.username == username)
         q = q.filter(cls.page_url == page_url)
         if dt is not None and dt != '':
+            if DEBUG:
+                logging.error(dt)
             date_format = "%Y-%m-%d %H:%M:%S.%f" # 2014-02-25 11:31:06.090960
             dtf = datetime.strptime(dt, date_format)
             q = q.filter(cls.last_modified == dtf)
@@ -256,11 +259,7 @@ def history_page(wr, template, edit_mode, page_url):
     page_list = page_key.fetch(50)
     if not page_list and not edit_mode: # page does not exist (should not happen)
         wr.redirect('/')
-    # set 
-    self.response.headers['Content-Type'] = 'text/plain'
-    self.response.headers.add_header('Set-Cookie', 'username=' + str(hash_str(username)) + '; Path=/')
-    self.redirect('/')
-        
+
     t = JINJA_ENVIRONMENT.get_template(template)
     wr.response.write(t.render(username = valid_username, edit_mode = edit_mode, 
                                pages = page_list, page_url = page_url, error = ''))
