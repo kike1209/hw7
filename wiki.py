@@ -8,7 +8,7 @@ from google.appengine.ext import ndb
 import hmac
 import logging
 import time
-import datetime
+from datetime import datetime
 
 """
 Udacity CS-253
@@ -44,16 +44,16 @@ class WikiPage(ndb.Model):
     last_modified = ndb.DateTimeProperty(auto_now = True)
     
     @classmethod
-    def query_wiki(cls, username, page_url, datetime=None):
+    def query_wiki(cls, username, page_url, dt=None):
         q = cls.query()
         q = q.filter(cls.username == username)
         q = q.filter(cls.page_url == page_url)
-        if datetime is not None and datetime != '':
+        if dt is not None and dt != '':
             if DEBUG:
-                logging.error(datetime)
+                logging.error(dt)
             date_format = "%Y-%m-%d %H:%M:%S.%f" # 2014-02-25 11:31:06.090960
-            dt = datetime.strptime(datetime, date_format)
-            q = q.filter(cls.last_modified == dt)
+            dtf = datetime.strptime(dt, date_format)
+            q = q.filter(cls.last_modified == dtf)
             return q
         else:
             return q.order(-cls.last_modified)
